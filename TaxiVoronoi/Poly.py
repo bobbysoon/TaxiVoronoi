@@ -1,11 +1,6 @@
 from Border import *
 
-epsilon = 1e-04
-
 class Poly:
-	clockwise=False
-	ccw= not Poly.clockwise
-	WindingOrderUsed = Poly.ccw
 
 	def __init__(self, c ):
 		self.centroid= c
@@ -26,11 +21,11 @@ class Poly:
 	def RegionBorder(self, p):
 		rDist= mDist(p,self.centroid)
 		dists= sorted([ mDist(c,p) for c in Poly.P if c!=self.centroid ])
-		return rDist-dists[0]<epsilon
+		return rDist-dists[0]<Poly.epsilon
 
 	def TrisectPoint(self, p):
 		dists= sorted([mDist(c,p) for c in Poly.P])
-		return dists[1]-dists[0]<epsilon and dists[2]-dists[1]<epsilon
+		return dists[1]-dists[0]<Poly.epsilon and dists[2]-dists[1]<Poly.epsilon
 
 	def intersectBorders(self):
 		B= self.borders
@@ -90,7 +85,7 @@ class Poly:
 		for vi in range(l):
 			dx,dy = self.verts[vi][0]-v[0],self.verts[vi][1]-v[1]
 			d=max([abs(dx),abs(dy)])
-			if d<epsilon:
+			if d<Poly.epsilon:
 				return vi
 		self.verts.append(v)
 		return l
@@ -102,4 +97,9 @@ class Poly:
 			v1,v2 = poly[i],poly[(i+1) % N]
 			total += v1[0]*v2[1] - v1[1]*v2[0]
 		return total/2
+
+Poly.epsilon = 1e-04
+Poly.clockwise=False
+Poly.ccw= not Poly.clockwise
+Poly.WindingOrderUsed = Poly.ccw
 

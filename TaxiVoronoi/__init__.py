@@ -8,7 +8,7 @@ def indexVert(v,verts):
 	for vi in range(l):
 		dx,dy = verts[vi][0]-v[0],verts[vi][1]-v[1]
 		d=max([abs(dx),abs(dy)])
-		if d<epsilon:
+		if d<Poly.epsilon:
 			return vi
 	verts.append(v)
 	return l
