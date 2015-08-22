@@ -2,10 +2,10 @@ from Border import *
 
 epsilon = 1e-04
 
-clockwise=False
-ccw= not clockwise
 class Poly:
-	WindingOrderUsed = ccw
+	clockwise=False
+	ccw= not Poly.clockwise
+	WindingOrderUsed = Poly.ccw
 
 	def __init__(self, c ):
 		self.centroid= c
