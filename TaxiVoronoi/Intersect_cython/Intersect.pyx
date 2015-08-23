@@ -15,11 +15,21 @@ class Ray(tuple):
 		r1x,r1y=r1;r2x,r2y=r2
 		return tuple.__new__(Ray, (Vec2(r1x,r1y),Vec2(r2x,r2y)) )
 
+	def intersect(self,other):
+		if other.__class__ is Seg:	return RaySegIntersect(self,other)
+		if other.__class__ is Ray:	return RayRayIntersect(self,other)
+		if other.__class__ is Line:	return RayLineIntersect(self,other)
+
 class Seg(tuple):
 	def __new__(self, r1,r2=None):
 		if type(r2) is None: r1,r2=r1
 		r1x,r1y=r1;r2x,r2y=r2
 		return tuple.__new__(Seg, (Vec2(r1x,r1y),Vec2(r2x,r2y)) )
+
+	def intersect(self,other):
+		if other.__class__ is Seg:	return SegSegIntersect(other,self)
+		if other.__class__ is Ray:	return RaySegIntersect(other,self)
+		if other.__class__ is Line:	return SegLineIntersect(self,other)
 
 class Line(tuple):
 	def __new__(self, r1,r2=None):
@@ -27,6 +37,10 @@ class Line(tuple):
 		r1x,r1y=r1;r2x,r2y=r2
 		return tuple.__new__(Line, (Vec2(r1x,r1y),Vec2(r2x,r2y)) )
 
+	def intersect(self,other):
+		if other.__class__ is Seg:	return SegLineIntersect(other,self)
+		if other.__class__ is Ray:	return RayLineIntersect(other,self)
+		if other.__class__ is Line:	return LineLineIntersect(other,self)
 
 def TrisectPoint(p):
 	cdef float minDist1,minDist2,minDist3,dx,dy,d
@@ -47,6 +61,13 @@ def TrisectPoint(p):
 	return minDist2-minDist1<G.epsilon and minDist3-minDist2<G.epsilon
 
 def IntersectBorders(l1,l2):
+	verts = []
+	for li,lj in [(li,lj) for li in l1 for lj in l2]:
+		p = li.intersect(lj)
+		if p and TrisectPoint(p): verts.append( p )
+	return verts
+
+def _IntersectBorders(l1,l2):
 	verts=[]
 
 	r11,s12,r13 = l1

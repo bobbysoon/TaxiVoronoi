@@ -1,6 +1,6 @@
 #!/bin/bash
 
 #python setup.py build_ext --inplace
-#cython Intersect.pyx
+cython Intersect.pyx
 gcc -shared -pthread -fPIC -fwrapv -O2 -Wall -fno-strict-aliasing \
       -I/usr/include/python2.7 -o ../Intersect.so Intersect.c

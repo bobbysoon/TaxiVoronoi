@@ -10,6 +10,7 @@ So far, only tested in a (0,0),(1,1) range of points.
 Might require Poly.epsilon adjustment for larger/smaller scale, if verts aren't welding between polies. Currently it's 1e-04. 
 
 It will fail if any two supplied centroids are horizontal, vertical, or a 45 degree diagonal to each other. 
+With the RandomPointGrid settings where they are (in sfTest.py), this happens frequently.
 
 polies,verts = TaxiVoronoi(centroids)
 	centroids:	list of 2d points, aka sites, also centroids

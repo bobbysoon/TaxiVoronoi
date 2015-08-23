@@ -12,6 +12,6 @@ else:
 	print 'seed:\t%i'%s
 seed(s)
 
-polies,verts= TaxiVoronoi(RandomPointGrid( gridSize=8 , noise=2.5 ))
+polies,verts= TaxiVoronoi( RandomPointGrid( gridSize=8 , noise=1.0 ) )
 
 SFTaxiTest(polies,verts)

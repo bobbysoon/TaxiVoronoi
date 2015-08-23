@@ -6,7 +6,7 @@ class Poly:
 	def __init__(self, c ):
 		self.centroid= c
 		self.borders= [ Border(c,oc) for oc in G.P if c!=oc ]
-		assert not True in [b.isLine for b in self.borders]
+		#assert not True in [b.isLine for b in self.borders]
 
 		for b in self.borders:
 			b.verts= [p for p in list(b.seg) if self.RegionBorder(p)]
@@ -21,14 +21,14 @@ class Poly:
 		dists= sorted([mDist(c,p) for c in G.P])
 		return dists[1]-dists[0]<G.epsilon and dists[2]-dists[1]<G.epsilon
 
-	def intersectBorders(self):
+	def intersectBorders(self): # the slow part
 		B= self.borders
 		for i,j in [(i,j) for i in range(1,len(B)) for j in range(i)]:
-			verts = IntersectBorders(B[i].lines,B[j].lines)
+			verts = IntersectBorders(B[i].lines,B[j].lines) # IntersectBorders is cythonized for speed, in the Intersect module
 			B[i].verts.extend(verts)
 			B[j].verts.extend(verts)
 
-		self.borders= [b for b in self.borders if len(b)] # most don't intersect on this region's border
+		self.borders= [b for b in self.borders if len(b)] # few actually intersect
 
 	def sortBorderVerts(self):
 		for b in self.borders:
