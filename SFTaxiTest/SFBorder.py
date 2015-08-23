@@ -1,8 +1,7 @@
 from sfml import sf
 from SFCircle import *
 
-from TaxiVoronoi.Intersect import RaySegIntersect
-from TaxiVoronoi.SegRay import *
+from TaxiVoronoi.Intersect import *
 
 def ScreenEdgeIntersect(corners,rayOrigin,rayDirection):
 	edges= [ Seg(corners[i-1],corners[i]) for i in [0,1,2,3] ]

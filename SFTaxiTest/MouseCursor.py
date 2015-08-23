@@ -6,7 +6,7 @@ class MouseCursor(sf.Drawable):
 		sf.Drawable.__init__(self)
 		self.vertArray= sf.VertexArray(sf.PrimitiveType.LINES,8)
 		for i in range(4):
-			self.vertArray[2*i].color= sf.Color.WHITE
+			self.vertArray[2*i].color= sf.Color.RED
 			self.vertArray[2*i+1].color= sf.Color.TRANSPARENT
 
 	def draw(self, target,states):

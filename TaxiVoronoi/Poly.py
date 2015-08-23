@@ -1,50 +1,39 @@
 from Border import *
 
+
 class Poly:
 
 	def __init__(self, c ):
 		self.centroid= c
-		self.borders= [ Border(c,oc) for oc in Poly.P if c!=oc ]
+		self.borders= [ Border(c,oc) for oc in G.P if c!=oc ]
+		assert not True in [b.isLine for b in self.borders]
 
 		for b in self.borders:
 			b.verts= [p for p in list(b.seg) if self.RegionBorder(p)]
 
-		self.intersectBorders()
-		self.sortBorderVerts()
-		self.indexVerts()
-		self.sequenceBorders()
-		self.sequenceVerts()
-
-		self.isClosed = self.borders[0][0] == self.borders[-1][-1]
-		self.correctWindingOrder()
 
 	def RegionBorder(self, p):
 		rDist= mDist(p,self.centroid)
-		dists= sorted([ mDist(c,p) for c in Poly.P if c!=self.centroid ])
-		return rDist-dists[0]<Poly.epsilon
+		dists= sorted([ mDist(c,p) for c in G.P if c!=self.centroid ])
+		return rDist-dists[0]<G.epsilon
 
 	def TrisectPoint(self, p):
-		dists= sorted([mDist(c,p) for c in Poly.P])
-		return dists[1]-dists[0]<Poly.epsilon and dists[2]-dists[1]<Poly.epsilon
+		dists= sorted([mDist(c,p) for c in G.P])
+		return dists[1]-dists[0]<G.epsilon and dists[2]-dists[1]<G.epsilon
 
 	def intersectBorders(self):
 		B= self.borders
 		for i,j in [(i,j) for i in range(1,len(B)) for j in range(i)]:
-			pa= B[i].intersect(B[j])
-			for p in pa:
-				if self.TrisectPoint(p):
-					B[i].verts.append(p)
-					B[j].verts.append(p)
+			verts = IntersectBorders(B[i].lines,B[j].lines)
+			B[i].verts.extend(verts)
+			B[j].verts.extend(verts)
+
 		self.borders= [b for b in self.borders if len(b)] # most don't intersect on this region's border
 
 	def sortBorderVerts(self):
 		for b in self.borders:
-			if b.axis[0]:
-				b.verts.sort(key=lambda x: x[0])
-				#if b.axis[0]<0: b.verts.reverse()
-			else:
-				b.verts.sort(key=lambda x: x[1])
-				#if b.axis[1]<0: b.verts.reverse()
+			if b.axis[0]:		b.verts.sort(key=lambda x: x[0])
+			else:				b.verts.sort(key=lambda x: x[1])
 
 	def indexVerts(self):
 		self.verts=[]
@@ -78,14 +67,14 @@ class Poly:
 
 	def correctWindingOrder(self):
 		isClockwise = self.area_signed()>0
-		if isClockwise != Poly.WindingOrderUsed: self.reverse()
+		if isClockwise != G.WindingOrderUsed: self.reverse()
 
 	def indexVert(self, v):
 		l= len(self.verts)
 		for vi in range(l):
 			dx,dy = self.verts[vi][0]-v[0],self.verts[vi][1]-v[1]
 			d=max([abs(dx),abs(dy)])
-			if d<Poly.epsilon:
+			if d<G.epsilon:
 				return vi
 		self.verts.append(v)
 		return l
@@ -98,8 +87,4 @@ class Poly:
 			total += v1[0]*v2[1] - v1[1]*v2[0]
 		return total/2
 
-Poly.epsilon = 1e-04
-Poly.clockwise=False
-Poly.ccw= not Poly.clockwise
-Poly.WindingOrderUsed = Poly.ccw
 

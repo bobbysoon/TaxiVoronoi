@@ -38,12 +38,12 @@ class SFObjects(sf.Drawable):
 		self.sfPolies= { tuple(P[i]):SFPoly(polies[i],verts) for i in range(len(polies)) }
 		self.clickedAt= self.selectPoly
 		self.selectedPoly=None
-		self.vertCirc= SFCircle( oc=sf.Color.TRANSPARENT , ic=sf.Color(255,0,0,128) )
+		self.vertCirc= SFCircle( oc=sf.Color.TRANSPARENT , ic=sf.Color(0,0,255,128) )
 		self.pc=0
 		self.text=Text()
 
 	def setScale(self,scale):
-		self.vertCirc.setScale(5.0*scale)
+		self.vertCirc.setScale(2.5*scale)
 		self.text.ratio=scale,scale
 		#if self.selectedPoly:
 		#	self.selectedPoly.setScale(scale)
