@@ -37,3 +37,43 @@ Border:
 	verts: much like Poly.verts
 
 	a border's rays who an open vert of a non-closed poly lies on could be used to complete it's representation
+
+
+note: This can be done faster. I'm seeing good results so far in a process surmized as:
+(i hope you like python)
+(P= the centroids)
+determine bounds of P: bounds= 100+% of min & max of P
+create 4 temporary centroids, TP
+for p in P:
+	adjust TP so that they're mirroring p across the boundary lines, top,bottom,left,right
+	PP=P+TP
+	others= manhattan-distance from p sorted list of centroids in PP who aren't p
+	notClosed=True
+	B= empty list
+	while list of others isn't empty, and notClosed:
+		pp= others.pop(the next nearest to p)
+		b= Border(p,pp)
+		for bb in B:
+			v= intersect(b,bb)
+			if v:
+				t= Trisect(v,PP)
+				if t:
+					centroids in t are adjacent each other
+					v is a vert of boundary of each centroid in t
+					note that b and bb have each intersected another boundary once or twice
+
+		add b to B
+		if all borders in B have trisected twice, notClosed=False
+
+
+Many operations are the same in reverse. Border(p1,p2)==Border(p2,p1). Intersect(b1,b2)==Intersect(b2,b1)
+
+
+Trisect test is d2-d1<epsilon and d3-d2<epsilon, for dists d1,d2,d3 from point, testing all points of PP, which includes the temporary boundary centroids. I been using epsilon=1e-04, with P=rnd(1024.0)
+Trisect can return the three centroid regions it divides. They neighbor each other. You might note a neighbor of None or NILL for a temporary centroid
+
+
+Next is to add the points of the diagonal line segment of each border which passes a bisect test, similar to the trisect test
+Sequencing each centroid's polie's verts is simple to do by sorting the angle from centroid to vert. "Winding order", clockwise or ccw, can also be tested to see if you need to reverse a poly, for collision or hardware rendering or whatever.
+
+if you need to know which vert pair of a notClosed poly is the opening, bisect test (v1+v2)/2. 
